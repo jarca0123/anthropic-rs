@@ -17,8 +17,6 @@ use crate::{
     DEFAULT_MODEL,
 };
 
-const ANTHROPIC_VERSION: &str = "2023-06-01";
-
 /// The client to interact with the API.
 #[derive(Builder, Debug)]
 pub struct Client {
@@ -106,7 +104,6 @@ impl Client {
         headers.insert(CONTENT_TYPE, "application/json".parse().unwrap());
         headers.insert(ACCEPT, "application/json".parse().unwrap());
         headers.insert(API_VERSION_HEADER_KEY, API_VERSION.parse().unwrap());
-        headers.insert("anthropic-version", ANTHROPIC_VERSION.parse().unwrap());
         headers
     }
 
