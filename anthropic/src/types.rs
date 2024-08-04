@@ -1,5 +1,4 @@
 //! Module for types used in the API.
-use std::collections::HashMap;
 use std::pin::Pin;
 
 use derive_builder::Builder;
