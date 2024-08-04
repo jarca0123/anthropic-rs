@@ -46,28 +46,8 @@ pub enum Role {
 #[serde(rename_all = "snake_case", tag = "type")]
 pub enum ContentBlock {
     Text { text: String },
+    // TODO better types
     Image { source: String, media_type: String, data: String },
-    ToolCall { tool_call: ToolCall },
-}
-
-#[derive(Clone, Serialize, Deserialize, Debug, PartialEq, Eq)]
-pub struct ToolCall {
-    pub id: String,
-    pub name: String,
-    pub arguments: String,
-}
-
-#[derive(Clone, Serialize, Deserialize, Debug, PartialEq, Eq)]
-pub struct ToolCall {
-    pub id: String,
-    pub r#type: String,
-    pub function: FunctionCall,
-}
-
-#[derive(Clone, Serialize, Deserialize, Debug, PartialEq, Eq)]
-pub struct FunctionCall {
-    pub name: String,
-    pub arguments: String,
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug, Builder, PartialEq, Eq)]
@@ -119,9 +99,6 @@ pub struct MessagesRequest {
     /// Recommended for advanced use cases only. You usually only need to use temperature.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub top_k: Option<usize>,
-    /// The tools available for the model to use.
-    #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub tools: Vec<Tool>,
 }
 
 /// Reason for stopping the response generation.
@@ -216,7 +193,6 @@ pub type MessagesResponseStream = Pin<Box<dyn Stream<Item = Result<MessagesStrea
 #[serde(rename_all = "snake_case", tag = "type")]
 pub enum ContentBlockDelta {
     TextDelta { text: String },
-    ToolCallDelta { tool_call: ToolCallDelta },
 }
 
 #[derive(Clone, Serialize, Deserialize, Debug, Eq, PartialEq)]
@@ -252,16 +228,6 @@ pub enum MessagesStreamEvent {
     ContentBlockStop { index: usize },
     MessageDelta { delta: MessageDelta, usage: MessageDeltaUsage },
     MessageStop,
-    ToolCallStart { index: usize, tool_call: ToolCall },
-    ToolCallDelta { index: usize, delta: ToolCallDelta },
-    ToolCallStop { index: usize },
-}
-
-#[derive(Clone, Serialize, Deserialize, Debug, Eq, PartialEq)]
-pub struct ToolCallDelta {
-    pub id: Option<String>,
-    pub name: Option<String>,
-    pub arguments: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Clone, PartialEq, Eq, Serialize)]
@@ -275,22 +241,4 @@ impl std::fmt::Display for StreamError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!("Error ({}): {}", self.error_type, self.message))
     }
-}
-#[derive(Clone, Serialize, Deserialize, Debug, PartialEq, Eq)]
-pub struct Tool {
-    pub name: String,
-    pub description: String,
-    pub input_schema: serde_json::Value,
-}
-#[derive(Clone, Serialize, Deserialize, Debug, Eq, PartialEq)]
-pub struct ToolCallDelta {
-    pub id: Option<String>,
-    pub r#type: Option<String>,
-    pub function: Option<FunctionCallDelta>,
-}
-
-#[derive(Clone, Serialize, Deserialize, Debug, Eq, PartialEq)]
-pub struct FunctionCallDelta {
-    pub name: Option<String>,
-    pub arguments: Option<String>,
 }
