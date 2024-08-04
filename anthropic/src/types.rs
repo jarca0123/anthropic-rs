@@ -53,6 +53,13 @@ pub enum ContentBlock {
 #[derive(Clone, Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub struct ToolCall {
     pub id: String,
+    pub name: String,
+    pub arguments: String,
+}
+
+#[derive(Clone, Serialize, Deserialize, Debug, PartialEq, Eq)]
+pub struct ToolCall {
+    pub id: String,
     pub r#type: String,
     pub function: FunctionCall,
 }
@@ -250,6 +257,13 @@ pub enum MessagesStreamEvent {
     ToolCallStop { index: usize },
 }
 
+#[derive(Clone, Serialize, Deserialize, Debug, Eq, PartialEq)]
+pub struct ToolCallDelta {
+    pub id: Option<String>,
+    pub name: Option<String>,
+    pub arguments: Option<String>,
+}
+
 #[derive(Debug, Deserialize, Clone, PartialEq, Eq, Serialize)]
 pub struct StreamError {
     #[serde(rename = "type")]
@@ -264,15 +278,9 @@ impl std::fmt::Display for StreamError {
 }
 #[derive(Clone, Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub struct Tool {
-    pub r#type: String,
-    pub function: Function,
-}
-
-#[derive(Clone, Serialize, Deserialize, Debug, PartialEq, Eq)]
-pub struct Function {
     pub name: String,
     pub description: String,
-    pub parameters: serde_json::Value,
+    pub input_schema: serde_json::Value,
 }
 #[derive(Clone, Serialize, Deserialize, Debug, Eq, PartialEq)]
 pub struct ToolCallDelta {
